@@ -1,7 +1,9 @@
 package com.iiht.rest.firstrestjpamysql.controller;
 
 import com.iiht.rest.firstrestjpamysql.entity.Product;
+import com.iiht.rest.firstrestjpamysql.exception.InvalidValueException;
 import com.iiht.rest.firstrestjpamysql.service.ProductService;
+import org.hibernate.boot.spi.NaturalIdUniqueKeyBinder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,6 +33,21 @@ public class ProductController {
             return new ResponseEntity<Product>(product,HttpStatus.OK);
         }
         return new ResponseEntity<>("Product is not available",HttpStatus.NOT_FOUND);
+    }
+
+    //checking if exception handling is working
+    @GetMapping("/test")
+    public String message(String str) throws InvalidValueException,Exception {
+        str="abc1$#@";
+        if(str==null)
+            throw new NullPointerException("value not provided");
+        boolean isNumeric = str.chars().anyMatch(Character::isDigit);
+        if(str.length()<8)
+            throw new Exception("Length is less than 8 Characters");
+        if(isNumeric)
+            throw new InvalidValueException("Expected String found int");
+        else
+            return "hello...";
     }
 
     @PostMapping()
